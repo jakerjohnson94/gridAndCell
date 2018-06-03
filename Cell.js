@@ -14,30 +14,34 @@ Cell.prototype = {
     return this.element;
   },
   updateElementContent: function (content) {
-    this.outputElement.textContent = this.content;
+    this.outputElement.textContent = content;
+    return this.element;
   },
-  changeSize: function(height, width) {
+  changeSize: function (height, width) {
     this.element.style.height = height;
     this.element.style.width = width;
+    
   },
   addClass: function (newClass) {
     this.element.classList.add(newClass);
+    return this.element;
   },
-  swapClasses: function (newClass, oldClass) {
+  toggleIsClicked: function(){
+   if(!this.isClicked) this.isClicked = true
+   else this.isClicked = false
+  },
+  swapClasses: function (oldClass, newClass) {
     this.element.classList.remove(oldClass);
     this.element.classList.add(newClass);
+    return this.element;
   },
   addStyle: function (propertyName, value) {
     this.element.style[propertyName] = value;
+    return this.element;
+  },
+  appendCellChild: function(childElement){
+    this.element.appendChild(childElement)
   },
   constructor: Cell,
+
 }
-
-
-const gameBoard = new Grid(3, 3)
-gameBoard.findAndSelectCell(0, 2).addStyle('background', 'black')
-gameBoard.selectedCell.addClass('newClass')
-gameBoard.findNeighbors(gameBoard.selectedCell, (a)=> a.rowIndex !== 1)
-gameBoard.changeSizeOfAllCells('50px', '50px')
-console.log(gameBoard.selectedCell.neighborCellArray)
-gameBoard.selectedCell.swapClasses('newerClass', 'newClass')

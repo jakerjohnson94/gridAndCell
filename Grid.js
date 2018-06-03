@@ -21,13 +21,10 @@ Grid.prototype = {
   createCells: function (width, height) {
     this.cellArray = []
     for (let r = 0; r < this.rowCount; r++) {
-
       const rowElement = document.createElement('div')
       rowElement.classList.add('row')
       this.cellArray.push([])
-
       for (let c = 0; c < this.columnCount; c++) {
-
         const cell = new Cell(r, c)
         this.outputElement.appendChild(rowElement)
         rowElement.appendChild(cell.element)
@@ -37,15 +34,23 @@ Grid.prototype = {
     }
   },
 
-  findCell: function (rowIndex, columnIndex) {
+  findAndSelectCell: function (rowIndex, columnIndex) {
     if (!this.cellArray[rowIndex][columnIndex]) return
     return this.selectedCell = this.cellArray[rowIndex][columnIndex]
   },
 
-  findNeighbors: function (selectedCell) {
+  changeSizeOfAllCells: function (height, width){
+    for(let i in this.cellArray){
+      for (let cell of this.cellArray[i]){
+        cell.element.style.height = height
+        cell.element.style.width = width
+      }
+    }
+  },
+
+  findNeighbors: function (selectedCell, callbackFunction) {
     selectedCell.neighborCellArray = []
     Object.values(this.offsets).forEach((offset) => {
-
       const [rowOffset, colOffset] = offset;
       const neighborRowIndex = Number(selectedCell.rowIndex) + rowOffset
       const neighborColumnIndex = Number(selectedCell.columnIndex) + colOffset
@@ -54,9 +59,13 @@ Grid.prototype = {
         selectedCell.neighborCellArray.push(this.cellArray[neighborRowIndex][neighborColumnIndex])
       }
     })
-
-
+    if(callbackFunction){
+      
+     selectedCell.validNeighborCellArray = selectedCell.neighborCellArray.filter(callbackFunction)
+     console.log('valid neighbor', selectedCell.validNeighborCellArray)
+    }
   },
+
 
   constructor: Grid,
 }

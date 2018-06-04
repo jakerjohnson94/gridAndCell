@@ -15,43 +15,38 @@ function Grid(rowCount, columnCount, cellHeight, cellWidth) {
     bottomLeft: [-1, -1],
   }
 
+  this.boundClickEvent = this.eventListeners.click.bind(this)
   this.createCells()
   if (this.cellHeight && this.cellWidth) this.changeSizeOfAllCells(this.cellHeight, this.cellWidth)
-  this.boundClickEvent = this.eventListeners.click.bind(this)
-  this.addCellEventListeners()
+
 }
 
 Grid.prototype = {
   createCells: function (width, height) {
     this.cellArray = []
-    for (let r = 0; r < this.rowCount; r++) {
+    for (let rowIndex = 0; rowIndex < this.rowCount; rowIndex++) {
       const rowElement = document.createElement('div')
+      this.outputElement.appendChild(rowElement)
       rowElement.classList.add('row')
       this.cellArray.push([])
-      for (let c = 0; c < this.columnCount; c++) {
-        const cell = new Cell(r, c)
-        this.outputElement.appendChild(rowElement)
+
+      for (let columnIndex = 0; columnIndex < this.columnCount; columnIndex++) {
+        const cell = new Cell(rowIndex, columnIndex)
         rowElement.appendChild(cell.element)
-        this.cellArray[r].push(cell)
-      }
-    }
-  },
-  addCellEventListeners: function () {
-    this.cellArray.forEach((arrayOfCells) => {
-      for (let cell of arrayOfCells) {
+        this.cellArray[rowIndex].push(cell)   
         cell.element.addEventListener("click", this.boundClickEvent)
       }
-    })
+    }
   },
 
   findCell: function (rowIndex, columnIndex) {
     if (!this.cellArray[rowIndex][columnIndex]) return
     return this.cellArray[rowIndex][columnIndex]
   },
-  changeSizeOfAllCells: function (height, width) {
+  changeSizeOfAllCells: function (width, height) {
     for (let i in this.cellArray) {
       for (let cell of this.cellArray[i]) {
-        cell.changeSize(height, width)
+        cell.changeSize(width, height)
       }
     }
   },
@@ -83,7 +78,7 @@ Grid.prototype = {
     }
   },
 
-  findValidNeighbors: function (selectedCell, callbackFunction) {
+  findValidNeighbors: function (selectedCell, callback) {
     if (!selectedCell) return
     selectedCell.neighborCellArray = []
     Object.values(this.offsets).forEach((offset) => {
@@ -94,19 +89,16 @@ Grid.prototype = {
         selectedCell.neighborCellArray.push(this.cellArray[neighborRowIndex][neighborColumnIndex])
       }
     })
-    if (callbackFunction) return selectedCell.validNeighborCellArray = selectedCell.neighborCellArray.filter(callbackFunction)
+    if (callback) return selectedCell.validNeighborCellArray = selectedCell.neighborCellArray.filter(callback)
     else return selectedCell.neighborCellArray;
   },
-
-
-
 
   constructor: Grid,
   eventListeners: {
     click: function (event) {
       this.clickedCell = this.cellArray[event.currentTarget.dataset.rowIndex][event.currentTarget.dataset.columnIndex]
       console.log(this.clickedCell)
-      
+
     },
   },
 }

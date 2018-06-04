@@ -17,18 +17,13 @@ Cell.prototype = {
     this.outputElement.textContent = content;
     return this.element;
   },
-  changeSize: function (height, width) {
+  changeSize: function (width, height) {
     this.element.style.height = height;
     this.element.style.width = width;
-    
   },
   addClass: function (newClass) {
     this.element.classList.add(newClass);
-    return this.element;
-  },
-  toggleIsClicked: function(){
-   if(!this.isClicked) this.isClicked = true
-   else this.isClicked = false
+    return this.element; 
   },
   swapClasses: function (oldClass, newClass) {
     this.element.classList.remove(oldClass);
